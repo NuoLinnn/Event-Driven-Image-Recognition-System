@@ -4,6 +4,7 @@ import redis
 import tkinter as tk
 from tkinter import filedialog
 from channels import IMAGE_UPLOAD_REQUESTED
+import time
 
 r = redis.Redis(host="localhost", port=6379, decode_responses=True)
 
@@ -11,6 +12,15 @@ ALLOWED_EXTENSIONS = [
     ("Image files", "*.jpg *.jpeg *.png *.gif *.webp *.bmp *.tiff"),
     ("All files", "*.*")
 ]
+
+def event(topic: str, payload: dict) -> dict:
+    return {
+        "topic": topic,
+        "event_id": str(uuid.uuid4()),
+        "payload": payload,
+        "timestamp": time.time()
+    }
+
 
 def pick_image_file() -> str | None:
     """open file explorer for user to navigate to image"""
