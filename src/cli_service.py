@@ -14,13 +14,6 @@ ALLOWED_EXTENSIONS = [
     ("All files", "*.*")
 ]
 
-def event(type: str, topic: str, payload: dict) -> dict:
-    return {
-        "type": type,
-        "topic": topic,
-        "event_id": str(uuid.uuid4()),
-        "payload": payload,
-    }
 
 
 def pick_image_file() -> str | None:

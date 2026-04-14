@@ -26,16 +26,6 @@ def upload_from_input(image_path: str):
  
     print(f"Uploading image: {image_path}")
     # TODO: add upload logic
-    # Add event data to REDIS
-    stream_name = "image_uploads"
-    data = {
-        "type": 'jpg',
-        "topic": 'topic',
-        "event_id": str(uuid.uuid4()),
-        "payload": {}
-    }
-
-    message_id = r.xadd(stream_name, data)
  
  
 def listen():
