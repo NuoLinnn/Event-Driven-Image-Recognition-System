@@ -48,7 +48,7 @@ def get_cli_command():
             return
 
         # send payload to IMAGE_UPLOAD_REQUESTED
-        payload = json.dumps({"image_path" : os.path.abspath(image_path)})
+        payload = json.dumps({"image_path" : os.path.abspath(image_path), "timestamp": time.time()})
         r.publish(IMAGE_UPLOAD_REQUESTED, payload)
         print(f"send image to {IMAGE_UPLOAD_REQUESTED}")
 

@@ -28,9 +28,10 @@ def upload_from_input(image_path: str):
     # Add event data to REDIS
     stream_name = "image_uploads"
     data = {
-        "filename" image_path,
-        "status": "pending",
-        "timestamp": time.time()
+        "type": #ADD
+        "topic": topic,
+        "event_id": str(uuid.uuid4()),
+        "payload": payload
     }
 
     message_id = r.xadd(stream_name, data)
