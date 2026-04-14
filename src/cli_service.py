@@ -4,7 +4,7 @@ import redis
 from channels import IMAGE_UPLOAD_REQUESTED
 import upload_image
 
-r = redis.Redis(host="localhost", port=8080, decode_responses=True)
+r = redis.Redis(host="localhost", port=6379, decode_responses=True)
 
 # Create a function to submit a request from the command line
 def get_cli_command():
