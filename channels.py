@@ -1,0 +1,5 @@
+IMAGE_UPLOAD_REQUESTED = "image.upload.requested"
+IMAGE_UPLOADED         = "image.uploaded"
+IMAGE_PROCESSED        = "image.processed"
+IMAGE_ANNOTATED        = "image.annotated"
+IMAGE_EMBEDDED         = "image.embedded"
