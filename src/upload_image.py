@@ -1,6 +1,7 @@
 import os
 import json
 import redis
+import uuid
 from channels import IMAGE_UPLOAD_REQUESTED
 
 # Check extension type
@@ -28,10 +29,10 @@ def upload_from_input(image_path: str):
     # Add event data to REDIS
     stream_name = "image_uploads"
     data = {
-        "type": #ADD
-        "topic": topic,
+        "type": 'jpg',
+        "topic": 'topic',
         "event_id": str(uuid.uuid4()),
-        "payload": payload
+        "payload": {}
     }
 
     message_id = r.xadd(stream_name, data)

@@ -5,6 +5,7 @@ import tkinter as tk
 from tkinter import filedialog
 from channels import IMAGE_UPLOAD_REQUESTED
 import time
+import uuid
 
 r = redis.Redis(host="localhost", port=6379, decode_responses=True)
 
@@ -15,7 +16,7 @@ ALLOWED_EXTENSIONS = [
 
 def event(type: str, topic: str, payload: dict) -> dict:
     return {
-        "type": type
+        "type": type,
         "topic": topic,
         "event_id": str(uuid.uuid4()),
         "payload": payload,
