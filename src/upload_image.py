@@ -6,8 +6,10 @@ from channels import IMAGE_UPLOAD_REQUESTED
 # Check extension type
 ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png"}
 
+
 # Connect to REDIS
-r = redis.Redis(host="localhost", port=8080, decode_responses=True)
+r = redis.Redis(host="localhost", port=6379, decode_responses=True)
+
 
 # Create a function to take an image file from the cli_service
 def upload_from_input(image_path: str):
