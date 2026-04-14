@@ -3,8 +3,10 @@ import json
 import redis
 from channels import IMAGE_UPLOAD_REQUESTED
 
+# Check extension type
 ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png"}
 
+# Connect to REDIS
 r = redis.Redis(host="localhost", port=8080, decode_responses=True)
 
 # Create a function to take an image file from the cli_service
@@ -21,6 +23,15 @@ def upload_from_input(image_path: str):
  
     print(f"Uploading image: {image_path}")
     # TODO: add upload logic
+    # Add event data to REDIS
+    stream_name = "image_uploads"
+    data = {
+        "filename" image_path,
+        "status": "pending",
+        "timestamp": time.time()
+    }
+
+    message_id = r.xadd(stream_name, data)
  
  
 def listen():
