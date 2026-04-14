@@ -13,12 +13,12 @@ ALLOWED_EXTENSIONS = [
     ("All files", "*.*")
 ]
 
-def event(topic: str, payload: dict) -> dict:
+def event(type: str, topic: str, payload: dict) -> dict:
     return {
+        "type": type
         "topic": topic,
         "event_id": str(uuid.uuid4()),
         "payload": payload,
-        "timestamp": time.time()
     }
 
 
@@ -48,7 +48,7 @@ def get_cli_command():
             return
 
         # send payload to IMAGE_UPLOAD_REQUESTED
-        payload = json.dumps({"image_path" : os.path.abspath(image_path), "timestamp": time.time()})
+        payload = json.dumps({"image_id": os.path.splitext(os.path.basename(image_path))[0], "image_path" : os.path.abspath(image_path), "timestamp": time.time()})
         r.publish(IMAGE_UPLOAD_REQUESTED, payload)
         print(f"send image to {IMAGE_UPLOAD_REQUESTED}")
 
