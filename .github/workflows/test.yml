@@ -25,4 +25,4 @@ jobs:
           pip install pytest pytest-asyncio redis
 
       - name: Run tests
-        run: pytest test_cli_service.py -v
+        run: pytest test/ -v

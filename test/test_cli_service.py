@@ -28,7 +28,7 @@ sys.modules.setdefault("redis.asyncio", redis_asyncio_stub)
 # Now import the module under test (adjust name / path as needed)
 import importlib, importlib.util, pathlib
 
-SOURCE = pathlib.Path(__file__).parent / "cli_service.py"
+SOURCE = pathlib.Path(__file__).parent.parent / "src" / "cli_service.py"
 
 # If running without the actual source file alongside, fall back to loading
 # from its real location wherever you keep it.
