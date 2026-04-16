@@ -6,7 +6,6 @@ import tkinter as tk
 from tkinter import filedialog
 from channels import IMAGE_UPLOAD_REQUESTED
 import time
-import uuid
 
 
 ALLOWED_EXTENSIONS = [

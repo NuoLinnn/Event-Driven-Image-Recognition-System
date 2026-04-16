@@ -28,13 +28,13 @@ async def listen():
 # TODO implement this function                
 async def annotate_image(data: dict):
     """funciton to annotate the image in the message"""
-    print(f"[annotate_image] annotating image: {data.get("image_id")}...")
+    print(f"[annotate_image] annotating image: {data.get('image_id')}...")
     
     # mock annotated data
     annotated_data = {"annotated_data" : "sample data"}
     new_data = data | annotated_data
 
-    print(f"[annotate_image] done annotating {data.get("image_id")}!")
+    print(f"[annotate_image] done annotating {data.get('image_id')}!")
     await send_image_annotated_message(new_data)
 
 
