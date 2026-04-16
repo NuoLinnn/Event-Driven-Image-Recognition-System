@@ -4,7 +4,8 @@ import time
 import asyncio
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
-
+import sys
+sys.path.append('../src')
 import cli_service
 
 @pytest.fixture
