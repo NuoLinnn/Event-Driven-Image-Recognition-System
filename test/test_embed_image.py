@@ -2,7 +2,7 @@ import json
 import pytest
 from unittest.mock import AsyncMock, patch
 
-from src import embed_image
+import embed_image
 
 
 @pytest.mark.asyncio

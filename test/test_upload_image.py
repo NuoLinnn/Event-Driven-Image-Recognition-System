@@ -2,8 +2,7 @@ import json
 import asyncio
 import pytest
 from unittest.mock import AsyncMock, patch
-
-from src import upload_image as upload_service
+import upload_image as upload_service
 
 @pytest.fixture
 def mock_redis(monkeypatch):

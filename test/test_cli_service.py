@@ -5,7 +5,7 @@ import asyncio
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 
-from src import cli_service
+import cli_service
 
 @pytest.fixture
 def mock_redis(monkeypatch):
