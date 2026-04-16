@@ -38,11 +38,11 @@ async def process_image(data: dict):
     await send_image_processing_requested_message(data)
 
 async def process_embedded(data: dict):
-    print(f"[embed_image] Handling processed: {data.get('image_id')}")
+    print(f"[process_image] Handling processed: {data.get('image_id')}")
     # TODO: your logic here
 
 async def process_annotated(data: dict):
-    print(f"[embed_image] Handling annotated: {data.get('image_id')}")
+    print(f"[process_image] Handling annotated: {data.get('image_id')}")
     # TODO: your logic here
 
 # list channels this module listens to 

@@ -31,6 +31,7 @@ async def upload_from_input(data: dict):
     print(f"[upload_image] Uploading image: {image_path}")
     # TODO: add upload logic here (e.g. copy to storage, call upload API)
     
+    print(f"[upload_image] done uploading image {image_id}!")
     await send_image_uploaded_message(image_id,image_path, timestamp)
  
 
