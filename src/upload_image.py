@@ -1,6 +1,5 @@
 import os
 import json
-import redis
 import asyncio
 import redis.asyncio as aioredis
 import uuid
@@ -11,7 +10,7 @@ ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png"}
 
 
 # Connect to REDIS
-r = redis.Redis(host="localhost", port=6379, decode_responses=True)
+r = aioredis.Redis(host="localhost", port=6379, decode_responses=True)
 
 
 async def upload_from_input(data: dict):

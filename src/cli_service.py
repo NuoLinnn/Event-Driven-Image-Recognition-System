@@ -1,7 +1,6 @@
 import os
 import json
 import asyncio
-import redis
 import redis.asyncio as aioredis
 import tkinter as tk
 from tkinter import filedialog
@@ -9,13 +8,13 @@ from channels import IMAGE_UPLOAD_REQUESTED
 import time
 import uuid
 
-r = redis.Redis(host="localhost", port=6379, decode_responses=True)
 
 ALLOWED_EXTENSIONS = [
     ("Image files", "*.jpg *.jpeg *.png *.gif *.webp *.bmp *.tiff"),
     ("All files", "*.*")
 ]
 
+r = aioredis.Redis(host="localhost", port=6379, decode_responses=True)
 
 
 def pick_image_file() -> str | None:
@@ -64,7 +63,7 @@ async def get_cli_command():
     )
 
     if ask.lower() == "upload an image":
-        image_path = await pick_image_file()
+        image_path = await pick_image_file_async()
  
         if not image_path:
             print("No file selected.")
