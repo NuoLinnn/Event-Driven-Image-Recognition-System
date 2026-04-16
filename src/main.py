@@ -21,11 +21,14 @@ async def run_cli():
         await cli_service.get_cli_command()
         run_again = await loop.run_in_executor(
             None,
-            lambda: input("Do another? (Y/N)\n").strip().lower()
+            lambda: input("Run another command? (Y/N)\n").strip().lower()
         )
         if run_again != 'y':
-            break
-    return
+            print("Shutting down...")
+            for task in asyncio.all_tasks():
+                if task is not asyncio.current_task():
+                    task.cancel()
+            return  
 
 
 async def main():
