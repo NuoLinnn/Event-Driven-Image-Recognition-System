@@ -14,7 +14,11 @@ import sys
 import types
 
 channels_stub = types.ModuleType("channels")
-channels_stub.IMAGE_UPLOAD_REQUESTED = "image_upload_requested"
+channels_stub.IMAGE_UPLOAD_REQUESTED = "image.upload.requested"
+channels_stub.IMAGE_UPLOADED = "image.uploaded"
+channels_stub.IMAGE_PROCESSED = "image.processed"
+channels_stub.IMAGE_ANNOTATED = "image.annotated"
+channels_stub.IMAGE_EMBEDDED = "image.embedded"
 sys.modules.setdefault("channels", channels_stub)
 
 # Stub redis so no real connection is attempted at import time
