@@ -39,7 +39,8 @@ def listen():
  
         data = json.loads(message["data"])
         image_path = data.get("image_path")
- 
+
+        # if gets message, send message to IMAGE_UPLOADED channel
         if image_path:
             upload_from_input(image_path)
  

@@ -41,14 +41,26 @@ def get_cli_command():
             print(f"ERROR: file not found at {image_path}")
             return
 
-        # send payload to IMAGE_UPLOAD_REQUESTED
-        payload = json.dumps({"image_id": os.path.splitext(os.path.basename(image_path))[0], "image_path" : os.path.abspath(image_path), "timestamp": time.time()})
-        r.publish(IMAGE_UPLOAD_REQUESTED, payload)
-        print(f"send image to {IMAGE_UPLOAD_REQUESTED}")
-
+        send_image_upload_requested_message(image_path)
+        
     elif ask.lower() == "query a topic":
         # Input code to point to functions to find images that are close to or match the topic
         print("querying topic")
+
+
+def send_image_upload_requested_message(image_path: str):
+    """send message to IMAGE_UPLOAD_REQUESTED channel"""
+    image_id = os.path.splitext(os.path.basename(image_path))[0]
+    image_path = os.path.abspath(image_path)
+    timestamp = time.time()
+    
+    payload=json.dumps({ "image_id" : image_id,
+                         "image_path" : image_path,
+                         "timestamp" : timestamp
+                        })
+    
+    r.publish(IMAGE_UPLOAD_REQUESTED, payload)
+    print(f"send image to {IMAGE_UPLOAD_REQUESTED}")
 
 if __name__ == "__main__":
     get_cli_command()
