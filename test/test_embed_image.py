@@ -3,7 +3,7 @@ import pytest
 from unittest.mock import AsyncMock, patch
 import sys
 sys.path.append('../src')
-import embed_image
+import embed_image as image_embedder
 
 
 @pytest.mark.asyncio
@@ -70,7 +70,7 @@ async def test_listen_triggers_embed(monkeypatch):
     mock_pubsub.listen.side_effect = fake_listen
 
     mock_redis = AsyncMock()
-    mock_redis.pubsub.return_value = mock_pubsub
+    mock_redis.pubsub = MagicMock(return_value=mock_pubsub)
 
     monkeypatch.setattr(image_embedder, "r", mock_redis)
 
