@@ -1,6 +1,8 @@
 import os
 import json
+import asyncio
 import redis
+import redis.asyncio as aioredis
 import tkinter as tk
 from tkinter import filedialog
 from channels import IMAGE_UPLOAD_REQUESTED
@@ -28,39 +30,51 @@ def pick_image_file() -> str | None:
     root.destroy()
     return path or None
 
-# Create a function to submit a request from the command line
-def get_cli_command():
-    ask = input("What do you want to do: 'upload an image', or 'query a topic'?")
-    if ask.lower() == "upload an image":
-        # Input code to point to functions to upload and process image
-        # Send information to the upload_image service
-        image_path = pick_image_file()
 
-        # return if file not found
-        if not os.path.exists(image_path):
-            print(f"ERROR: file not found at {image_path}")
-            return
-
-        send_image_upload_requested_message(image_path)
-        
-    elif ask.lower() == "query a topic":
-        # Input code to point to functions to find images that are close to or match the topic
-        print("querying topic")
+async def pick_image_file_async() -> str | None:
+    """get image file via async"""
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(None, pick_image_file)
 
 
-def send_image_upload_requested_message(image_path: str):
-    """send message to IMAGE_UPLOAD_REQUESTED channel"""
+async def send_image_upload_requested_message(image_path: str):
+    """Publish to IMAGE_UPLOAD_REQUESTED channel."""
     image_id = os.path.splitext(os.path.basename(image_path))[0]
     image_path = os.path.abspath(image_path)
     timestamp = time.time()
-    
-    payload=json.dumps({ "image_id" : image_id,
-                         "image_path" : image_path,
-                         "timestamp" : timestamp
-                        })
-    
-    r.publish(IMAGE_UPLOAD_REQUESTED, payload)
-    print(f"send image to {IMAGE_UPLOAD_REQUESTED}")
+ 
+    payload = json.dumps({
+        "image_id": image_id,
+        "image_path": image_path,
+        "timestamp": timestamp
+    })
+ 
+    await r.publish(IMAGE_UPLOAD_REQUESTED, payload)
+    print(f"[cli_service] Sent image to {IMAGE_UPLOAD_REQUESTED}")
 
-if __name__ == "__main__":
-    get_cli_command()
+
+# Create a function to submit a request from the command line
+async def get_cli_command():
+    loop = asyncio.get_event_loop()
+ 
+    # input() is blocking — run it in a thread too
+    ask = await loop.run_in_executor(
+        None,
+        lambda: input("What do you want to do: 'upload an image', or 'query a topic'? ").strip()
+    )
+
+    if ask.lower() == "upload an image":
+        image_path = await pick_image_file()
+ 
+        if not image_path:
+            print("No file selected.")
+            return
+ 
+        if not os.path.exists(image_path):
+            print(f"ERROR: file not found at {image_path}")
+            return
+ 
+        await send_image_upload_requested_message(image_path)
+ 
+    elif ask.lower() == "query a topic":
+        print("querying topic")
