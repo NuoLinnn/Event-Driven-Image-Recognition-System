@@ -1,6 +1,9 @@
+import os
 import json
+import time
+import asyncio
 import pytest
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 import sys
 sys.path.append('../src')
 import embed_image as image_embedder
@@ -100,7 +103,7 @@ async def test_listen_ignores_invalid_messages(monkeypatch):
     mock_pubsub.listen.side_effect = fake_listen
 
     mock_redis = AsyncMock()
-    mock_redis.pubsub.return_value = mock_pubsub
+    mock_redis.pubsub = MagicMock(return_value=mock_pubsub)
 
     monkeypatch.setattr(image_embedder, "r", mock_redis)
 
