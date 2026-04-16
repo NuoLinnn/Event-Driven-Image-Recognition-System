@@ -45,5 +45,9 @@ def listen():
             upload_from_input(image_path)
  
  
+def send_image_uploaded_message():
+    """send message to IMAGE_UPLOADED channel"""
+    
+
 if __name__ == "__main__":
     listen()
