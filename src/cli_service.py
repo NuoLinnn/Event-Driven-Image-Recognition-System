@@ -59,7 +59,7 @@ async def get_cli_command():
     # input() is blocking — run it in a thread too
     ask = await loop.run_in_executor(
         None,
-        lambda: input("What do you want to do: 'upload an image', or 'query a topic'? ").strip()
+        lambda: input("What do you want to do: 'upload an image', or 'query a topic'? \n").strip()
     )
 
     if ask.lower() == "upload an image":

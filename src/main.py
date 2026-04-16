@@ -1,13 +1,14 @@
 import asyncio
 import upload_image
 import cli_service
+import embed_image
 
 # register all listeners to run concurrently
 LISTENERS = [
             upload_image.listen,
             #process_image.listen,
             #annotate_image.listen,
-            #embed_image.listen
+            embed_image.listen
 ]
 
 
@@ -18,10 +19,11 @@ async def run_cli():
         await cli_service.get_cli_command()
         run_again = await loop.run_in_executor(
             None,
-            lambda: input("Do another? (Y/N)").strip().lower()
+            lambda: input("Do another? (Y/N)\n").strip().lower()
         )
         if run_again != 'y':
             break
+    return
 
 
 async def main():
@@ -36,7 +38,7 @@ async def main():
         for task in tasks:
             task.cancel()
         await asyncio.gather(*tasks, return_exceptions=True)
-        print("[main] All tasks shut down.")
+        print(f"[main] All tasks shut down.")
  
  
 if __name__ == "__main__":
