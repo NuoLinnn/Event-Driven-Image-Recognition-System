@@ -2,7 +2,7 @@ import os
 import json
 import asyncio
 import redis.asyncio as aioredis
-from channels import IMAGE_UPLOADED, IMAGE_ANNOTATED, IMAGE_EMBEDDED
+from channels import IMAGE_UPLOADED, IMAGE_ANNOTATED, IMAGE_EMBEDDED, IMAGE_PROCESSING_REQUESTED
 
 # Connect to REDIS
 r = aioredis.Redis(host="localhost", port=6379, decode_responses=True)
@@ -25,11 +25,17 @@ async def listen():
             asyncio.create_task(handler(data))
 
 
+async def send_image_processing_requested_message(data: dict):
+    payload = json.dumps(data)
+    await r.publish(IMAGE_PROCESSING_REQUESTED, payload)
+    print(f"[process_image] send message to {IMAGE_PROCESSING_REQUESTED}")
+
+
 async def process_image(data: dict):
     """funciton to embed the image in the message"""
     print(f"[process_image] processing image: {data.get("image_id")}")
-    return
 
+    await send_image_processing_requested_message(data)
 
 async def process_embedded(data: dict):
     print(f"[embed_image] Handling processed: {data.get('image_id')}")

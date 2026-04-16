@@ -3,7 +3,7 @@ import json
 import asyncio
 import redis.asyncio as aioredis
 import uuid
-from channels import IMAGE_PROCESSING_REQUESTED
+from channels import IMAGE_PROCESSING_REQUESTED, IMAGE_ANNOTATED
 
 # Connect to REDIS
 r = aioredis.Redis(host="localhost", port=6379, decode_responses=True)
@@ -29,4 +29,16 @@ async def listen():
 async def annotate_image(data: dict):
     """funciton to annotate the image in the message"""
     print(f"[annotate_image] annotate image: {data.get("image_id")}")
-    return
+    
+    # mock annotated data
+    annotated_data = {"annotated_data" : "sample data"}
+    new_data = data | annotated_data
+
+    await send_image_annotated_message(new_data)
+
+
+async def send_image_annotated_message(data : dict):
+    """publish to IMAGE_ANNOTATED CHANNEL after successfully annotated"""
+    payload = json.dumps(data)
+    await r.publish(IMAGE_ANNOTATED, payload)
+    print(f"[annotated_image] Sent message to {IMAGE_ANNOTATED}")

@@ -3,7 +3,7 @@ import json
 import asyncio
 import redis.asyncio as aioredis
 import uuid
-from channels import IMAGE_PROCESSING_REQUESTED
+from channels import IMAGE_PROCESSING_REQUESTED, IMAGE_EMBEDDED
 
 # Connect to REDIS
 r = aioredis.Redis(host="localhost", port=6379, decode_responses=True)
@@ -29,4 +29,16 @@ async def listen():
 async def embed_image(data: dict):
     """funciton to embed the image in the message"""
     print(f"[embed_image] embedding image: {data.get("image_id")}")
-    return
+
+    # mock embedded data
+    embedded_data = {"embedded_data" : "sample embedded data"}
+    new_data = data | embedded_data
+
+    await send_image_embedded_message(new_data)
+
+
+async def send_image_embedded_message(data : dict):
+    """publish to IMAGE_ANNOTATED CHANNEL after successfully annotated"""
+    payload = json.dumps(data)
+    await r.publish(IMAGE_EMBEDDED, payload)
+    print(f"[annotated_image] Sent message to {IMAGE_EMBEDDED}")
