@@ -3,12 +3,7 @@ import asyncio
 import pytest
 from unittest.mock import AsyncMock, patch
 
-import upload_image as upload_service
-
-
-# ---------------------------------------------------------------------------
-# Fixtures
-# ---------------------------------------------------------------------------
+from src import upload_image as upload_service
 
 @pytest.fixture
 def mock_redis(monkeypatch):
