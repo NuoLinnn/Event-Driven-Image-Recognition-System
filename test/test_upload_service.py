@@ -18,6 +18,7 @@ sys.modules.setdefault("channels", channels_stub)
 
 redis_stub = types.ModuleType("redis")
 redis_asyncio_stub = types.ModuleType("redis.asyncio")
+redis_asyncio_stub.Redis = MagicMock(return_value=MagicMock())
 redis_stub.Redis = MagicMock(return_value=MagicMock())
 redis_stub.asyncio = redis_asyncio_stub
 sys.modules.setdefault("redis", redis_stub)
@@ -29,7 +30,7 @@ sys.modules.setdefault("redis.asyncio", redis_asyncio_stub)
 
 import importlib.util, pathlib
 
-SOURCE = pathlib.Path(__file__).parent.parent / "src" / "upload_service.py"
+SOURCE = pathlib.Path(__file__).parent.parent / "src" / "upload_image.py"
 spec = importlib.util.spec_from_file_location("upload_service", SOURCE)
 upload_service = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(upload_service)

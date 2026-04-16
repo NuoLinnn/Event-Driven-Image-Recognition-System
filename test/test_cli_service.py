@@ -20,6 +20,7 @@ sys.modules.setdefault("channels", channels_stub)
 # Stub redis so no real connection is attempted at import time
 redis_stub = types.ModuleType("redis")
 redis_asyncio_stub = types.ModuleType("redis.asyncio")
+redis_asyncio_stub.Redis = MagicMock(return_value=MagicMock())
 redis_stub.Redis = MagicMock(return_value=MagicMock())
 redis_stub.asyncio = redis_asyncio_stub
 sys.modules.setdefault("redis", redis_stub)
