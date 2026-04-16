@@ -2,12 +2,14 @@ import asyncio
 import upload_image
 import cli_service
 import embed_image
+import annotate_image
+import process_image
 
 # register all listeners to run concurrently
 LISTENERS = [
             upload_image.listen,
-            #process_image.listen,
-            #annotate_image.listen,
+            process_image.listen,
+            annotate_image.listen,
             embed_image.listen
 ]
 
