@@ -1,8 +1,12 @@
+import os
+import json
 import redis
+import uuid
 import upload_image
+from channels import IMAGE_UPLOADED, IMAGE_PROCESSED, IMAGE_EMBEDDED
 
 # Using REDIS:
-r = redis.Redis(host='localhost', port=6379, db=0)
+r = redis.Redis(host='localhost', port=6379, decode_responses = True)
 
 # Create a function to listen for the upload image to have a value returned
 def process_image_ready(stream_name):
