@@ -34,6 +34,7 @@ async def embed_image(data: dict):
     embedded_data = {"embedded_data" : "sample embedded data"}
     new_data = data | embedded_data
 
+    print(f"[embed_image] done embedding {data.get("image_id")}!")
     await send_image_embedded_message(new_data)
 
 
