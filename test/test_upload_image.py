@@ -118,7 +118,7 @@ async def test_listen_ignores_invalid_message(monkeypatch):
     mock_pubsub.subscribe = AsyncMock()
 
     mock_redis = AsyncMock()
-    mock_redis.pubsub.return_value = mock_pubsub
+    mock_redis.pubsub = MagicMock(return_value=mock_pubsub)
 
     monkeypatch.setattr(upload_service, "r", mock_redis)
 

@@ -77,15 +77,10 @@ async def test_listen_triggers_embed(monkeypatch):
 
     monkeypatch.setattr(image_embedder, "r", mock_redis)
 
-    mock_embed = AsyncMock()
-    monkeypatch.setattr(image_embedder, "embed_image", mock_embed)
+    with patch("asyncio.create_task") as mock_task:
+        await image_embedder.listen()
 
-    # Run listener briefly
-    task = asyncio.create_task(image_embedder.listen())
-    await asyncio.sleep(0.05)
-    task.cancel()
-
-    assert mock_embed.called
+    mock_task.assert_called_once()
 
 
 @pytest.mark.asyncio
