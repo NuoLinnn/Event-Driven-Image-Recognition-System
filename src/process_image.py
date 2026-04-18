@@ -33,7 +33,7 @@ async def send_image_processing_requested_message(data: dict):
 
 async def process_image(data: dict):
     """funciton to embed the image in the message"""
-    print(f"[process_image] processing image: {data.get("image_id")}")
+    print(f"[process_image] processing image: {data.get('image_id')}")
 
     await send_image_processing_requested_message(data)
 
