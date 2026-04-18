@@ -67,7 +67,7 @@ async def test_listen_triggers_annotate(monkeypatch):
         await asyncio.sleep(0.01)
 
     mock_pubsub = AsyncMock()
-    mock_pubsub.listen.side_effect = fake_listen
+    mock_pubsub.listen = fake_listen
 
     mock_redis = AsyncMock()
     mock_redis.pubsub = MagicMock(return_value=mock_pubsub)
@@ -96,7 +96,7 @@ async def test_listen_ignores_invalid_messages(monkeypatch):
         await asyncio.sleep(0.01)
 
     mock_pubsub = AsyncMock()
-    mock_pubsub.listen.side_effect = fake_listen
+    mock_pubsub.listen = fake_listen
 
     mock_redis = AsyncMock()
     mock_redis.pubsub = MagicMock(return_value=mock_pubsub)
@@ -122,7 +122,7 @@ async def test_listen_ignores_non_message(monkeypatch):
         await asyncio.sleep(0.01)
 
     mock_pubsub = AsyncMock()
-    mock_pubsub.listen.side_effect = fake_listen
+    mock_pubsub.listen = fake_listen
 
     mock_redis = AsyncMock()
     mock_redis.pubsub = MagicMock(return_value=mock_pubsub)
