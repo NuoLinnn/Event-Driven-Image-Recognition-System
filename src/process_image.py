@@ -13,17 +13,20 @@ async def listen():
     await pubsub.subscribe(*CHANNEL_HANDLERS)
     print(f"[process_image] Subscribed to '{list(CHANNEL_HANDLERS.keys())}', waiting for messages...")
  
-    async for message in pubsub.listen():
-        if message["type"] != "message":
-            continue
+    try:
+        async for message in pubsub.listen():
+            if message["type"] != "message":
+                continue
 
-        data = json.loads(message["data"])
-        channel = message["channel"]
-        handler = CHANNEL_HANDLERS.get(channel)
-            
-        if handler:
-            asyncio.create_task(handler(data))
-
+            data = json.loads(message["data"])
+            channel = message["channel"]
+            handler = CHANNEL_HANDLERS.get(channel)
+                
+            if handler:
+                asyncio.create_task(handler(data))
+    finally:
+        await pubsub.unsubscribe()
+        await pubsub.aclose()
 
 async def send_image_processing_requested_message(data: dict):
     payload = json.dumps(data)

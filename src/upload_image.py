@@ -52,12 +52,16 @@ async def listen():
     await pubsub.subscribe(IMAGE_UPLOAD_REQUESTED)
     print(f"[upload_image] Subscribed to '{IMAGE_UPLOAD_REQUESTED}', waiting for messages...")
  
-    async for message in pubsub.listen():
-        if message["type"] != "message":
-            continue
- 
-        data = json.loads(message["data"])
-        if data.get("image_path"):
-            # Each message is handled as its own concurrent task —
-            # a slow upload won't block the next incoming message
-            asyncio.create_task(upload_from_input(data))
+    try:
+        async for message in pubsub.listen():
+            if message["type"] != "message":
+                continue
+    
+            data = json.loads(message["data"])
+            if data.get("image_path"):
+                # Each message is handled as its own concurrent task —
+                # a slow upload won't block the next incoming message
+                asyncio.create_task(upload_from_input(data))
+    finally:
+        await pubsub.unsubscribe()
+        await pubsub.aclose()

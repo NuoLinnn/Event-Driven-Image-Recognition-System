@@ -13,15 +13,18 @@ async def listen():
     await pubsub.subscribe(QUERY_REQUESTED)
     print(f'[query_service] Subscribed to {QUERY_REQUESTED}, waiting for messages...')
 
-    async for message in pubsub.listen():
-        if message["type"] != "message":
-            continue
-    
-        data = json.loads(message["data"])
-        if data.get("query"):
-            asyncio.create_task(run_query_service(data))
-
-
+    try:
+        async for message in pubsub.listen():
+            if message["type"] != "message":
+                continue
+        
+            data = json.loads(message["data"])
+            if data.get("query"):
+                asyncio.create_task(run_query_service(data))
+    finally:
+        await pubsub.unsubscribe()
+        await pubsub.aclose()
+ 
 # TODO implement this function
 async def run_query_service(data: dict):
     """function to run the user requested query"""

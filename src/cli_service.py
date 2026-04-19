@@ -64,14 +64,17 @@ async def listen():
     await pubsub.subscribe(QUERY_ANSWERED)
     print(f'[cli_service] Subscribed to {QUERY_ANSWERED}, waiting for messages...')
 
-    async for message in pubsub.listen():
-        if message["type"] != "message":
-            continue
-    
-        data = json.loads(message["data"])
-        if data.get("answer"):
-            asyncio.create_task(print_query_output(data))
-
+    try:
+        async for message in pubsub.listen():
+            if message["type"] != "message":
+                continue
+        
+            data = json.loads(message["data"])
+            if data.get("answer"):
+                asyncio.create_task(print_query_output(data))
+    finally:
+        await pubsub.unsubscribe()
+        await pubsub.aclose()
 
 async def print_query_output(data: str):
     print(f'[cli_service] Recieved answer: {data}')

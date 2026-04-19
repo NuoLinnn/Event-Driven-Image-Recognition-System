@@ -14,16 +14,19 @@ async def listen():
     await pubsub.subscribe(IMAGE_PROCESSING_REQUESTED)
     print(f"[annotate_image] Subscribed to '{IMAGE_PROCESSING_REQUESTED}', waiting for messages...")
  
-    async for message in pubsub.listen():
-        if message["type"] != "message":
-            continue
+    try:
+        async for message in pubsub.listen():
+            if message["type"] != "message":
+                continue
 
-        data = json.loads(message["data"])
-        if data.get("image_path"):
-            # Each message is handled as its own concurrent task —
-            # a slow upload won't block the next incoming message
-            asyncio.create_task(annotate_image(data))
-
+            data = json.loads(message["data"])
+            if data.get("image_path"):
+                # Each message is handled as its own concurrent task —
+                # a slow upload won't block the next incoming message
+                asyncio.create_task(annotate_image(data))
+    finally:
+        await pubsub.unsubscribe()
+        await pubsub.close()
 
 # TODO implement this function                
 async def annotate_image(data: dict):
