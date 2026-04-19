@@ -4,13 +4,16 @@ import cli_service
 import embed_image
 import annotate_image
 import process_image
+import query_service
 
 # register all listeners to run concurrently
 LISTENERS = [
             upload_image.listen,
             process_image.listen,
             annotate_image.listen,
-            embed_image.listen
+            embed_image.listen,
+            query_service.listen,
+            cli_service.listen
 ]
 
 

@@ -4,7 +4,7 @@ import asyncio
 import redis.asyncio as aioredis
 import tkinter as tk
 from tkinter import filedialog
-from channels import IMAGE_UPLOAD_REQUESTED, QUERY_REQUESTED
+from channels import IMAGE_UPLOAD_REQUESTED, QUERY_REQUESTED, QUERY_ANSWERED
 import time
 
 
@@ -58,6 +58,25 @@ async def send_query_requested_message(message: str):
     await r.publish(QUERY_REQUESTED, payload)
     print(f'[cli_service] Sent query to {QUERY_REQUESTED}')
 
+
+async def listen():
+    pubsub = r.pubsub()
+    await pubsub.subscribe(QUERY_ANSWERED)
+    print(f'[cli_service] Subscribed to {QUERY_ANSWERED}, waiting for messages...')
+
+    async for message in pubsub.listen():
+        if message["type"] != "message":
+            continue
+    
+        data = json.loads(message["data"])
+        if data.get("answer"):
+            asyncio.create_task(print_query_output(data))
+
+
+async def print_query_output(data: str):
+    print(f'[cli_service] Recieved answer: {data}')
+
+
 # Create a function to submit a request from the command line
 async def get_cli_command():
     loop = asyncio.get_event_loop()
@@ -83,7 +102,7 @@ async def get_cli_command():
         await send_image_upload_requested_message(image_path)
  
     # query the database
-    if ask.lower() == "query a topic":
+    elif ask.lower() == "query a topic":
         query = await loop.run_in_executor(
             None,
             lambda: input("What is your query?\n").strip()
