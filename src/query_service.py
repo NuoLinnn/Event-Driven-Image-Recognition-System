@@ -20,7 +20,10 @@ async def listen():
         
             data = json.loads(message["data"])
             if data.get("query"):
-                asyncio.create_task(run_query_service(data))
+                task = asyncio.create_task(run_query_service(data))
+                task.add_done_callback(
+                    lambda t: t.exception() and print(f"[query_service] task failed: {t.exception()}")
+                )
     finally:
         await pubsub.unsubscribe()
         await pubsub.aclose()

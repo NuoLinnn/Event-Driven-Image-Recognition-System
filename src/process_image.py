@@ -23,7 +23,10 @@ async def listen():
             handler = CHANNEL_HANDLERS.get(channel)
                 
             if handler:
-                asyncio.create_task(handler(data))
+                task = asyncio.create_task(handler(data))
+                task.add_done_callback(
+                    lambda t: t.exception() and print(f"[process_image] task failed: {t.exception()}")
+                )
     finally:
         await pubsub.unsubscribe()
         await pubsub.aclose()

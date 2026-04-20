@@ -23,7 +23,10 @@ async def listen():
             if data.get("image_path"):
                 # Each message is handled as its own concurrent task —
                 # a slow upload won't block the next incoming message
-                asyncio.create_task(embed_image(data))
+                task = asyncio.create_task(embed_image(data))
+                task.add_done_callback(
+                    lambda t: t.exception() and print(f"[embed_image] task failed: {t.exception()}")
+                )
     finally:
         await pubsub.unsubscribe()
         await pubsub.aclose()

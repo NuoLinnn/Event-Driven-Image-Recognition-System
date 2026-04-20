@@ -1,8 +1,6 @@
-import os
 import json
 import asyncio
 import redis.asyncio as aioredis
-import uuid
 from channels import IMAGE_PROCESSING_REQUESTED, IMAGE_ANNOTATED
 
 # Connect to REDIS
@@ -23,7 +21,10 @@ async def listen():
             if data.get("image_path"):
                 # Each message is handled as its own concurrent task —
                 # a slow upload won't block the next incoming message
-                asyncio.create_task(annotate_image(data))
+                task = asyncio.create_task(annotate_image(data))
+                task.add_done_callback(
+                    lambda t: t.exception() and print(f"[annotate_image] task failed: {t.exception()}")
+                )
     finally:
         await pubsub.unsubscribe()
         await pubsub.close()
