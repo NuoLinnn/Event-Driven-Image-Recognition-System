@@ -59,14 +59,6 @@ async def upload_from_input(data: dict):
         print(f"[upload_image] Rejected: file not found at '{image_path}'")
         return
 
-    # Build destination path and check for duplicates
-    dest_filename = f"{image_id}{ext}"
-    dest_path = os.path.join(UPLOAD_DEST_DIR, dest_filename)
-
-    if os.path.exists(dest_path):
-        print(f"[upload_image] Warning: image_id '{image_id}' already exists at '{dest_path}', skipping.")
-        return
-
     print(f"[upload_image] Reading image: {image_path}")
     try:
         with open(image_path, "rb") as f:
