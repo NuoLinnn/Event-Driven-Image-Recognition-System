@@ -88,12 +88,36 @@ async def process_image(data: dict):
     image_id = data.get("image_id")
     print(f"[process_image] Processing image: {image_id}")
 
-    # Initialise state record so we have a base to merge into later
     state_key = f"{PROCESSING_STATE_PREFIX}{image_id}"
-    await r.set(state_key, json.dumps({"image_id": image_id, "image_path": data.get("image_path")}), ex=IMAGE_READY_TTL)
+    try:
+        await r.set(state_key, json.dumps({"image_id": image_id, "image_path": data.get("image_path")}), ex=IMAGE_READY_TTL)
+    except Exception as e:
+        print(f"[process_image] Warning: could not persist state for '{image_id}': {e}")
 
     await send_image_processing_requested_message(data)
 
+async def _mark_complete(image_id: str, field: str, data: dict):
+    """Merge incoming data into per-image state, then check the barrier."""
+    state_key = f"{PROCESSING_STATE_PREFIX}{image_id}"
+    lock_key = f"{state_key}:lock"
+
+    try:
+        async with r.lock(lock_key, timeout=5):
+            state_raw = await r.get(state_key)
+            state = json.loads(state_raw) if state_raw else {}
+
+            state[field] = data
+            await r.set(state_key, json.dumps(state), ex=IMAGE_READY_TTL)
+
+            annotated_done = "annotated" in state
+            embedded_done = "embedded" in state
+    except Exception as e:
+        print(f"[process_image] Warning: could not update state for '{image_id}': {e}")
+        return
+
+    if annotated_done and embedded_done:
+        print(f"[process_image] Both steps complete for '{image_id}' — triggering IMAGE_READY")
+        await send_image_ready_message(image_id)
 
 async def process_embedded(data: dict):
     """Triggered on IMAGE_EMBEDDED — record completion and check barrier."""
