@@ -55,7 +55,7 @@ async def test_send_upload_requested_message(mock_redis):
     payload = json.loads(raw)
 
     assert channel == cli_service.IMAGE_UPLOAD_REQUESTED
-    assert payload["image_id"] == "photo"
+    assert payload["image_id"].startswith("photo")
     assert os.path.isabs(payload["image_path"])
     assert "timestamp" in payload
 

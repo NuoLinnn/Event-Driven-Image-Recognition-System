@@ -108,13 +108,13 @@ async def get_cli_command():
         await send_image_upload_requested_message(image_path)
  
     # query the database
-    elif ask.lower() == "query a topic":
+    elif ask == "query a topic":
         query = await loop.run_in_executor(
             None,
-            lambda: input("What is your query?\n").strip()
+            lambda: input("What is your query?\n> ").strip()
         )
-
-        await send_query_requested_message(query)
-
-    elif ask.lower() == "query a topic":
-        print("querying topic")
+        if query:
+            print("Querying topic")  # add this line
+            await send_query_requested_message(query)
+        else:
+            print("Empty query, skipping.")
