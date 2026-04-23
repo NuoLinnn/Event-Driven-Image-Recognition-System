@@ -57,32 +57,6 @@ async def send_image_ready_message(image_id: str):
     print(f"[process_image] Published IMAGE_READY for '{image_id}'")
 
 
-async def _mark_complete(image_id: str, field: str, data: dict):
-    """
-    Merge incoming data into the per-image state record under `field`,
-    then check whether both 'annotated' and 'embedded' are now present.
-    If so, publish IMAGE_READY and persist the final combined record.
-    Uses a Redis lock to prevent races between concurrent callbacks.
-    """
-    state_key = f"{PROCESSING_STATE_PREFIX}{image_id}"
-    lock_key = f"{state_key}:lock"
-
-    # Acquire a short-lived Redis lock to safely read-modify-write state
-    async with r.lock(lock_key, timeout=5):
-        state_raw = await r.get(state_key)
-        state = json.loads(state_raw) if state_raw else {}
-
-        state[field] = data
-        await r.set(state_key, json.dumps(state), ex=IMAGE_READY_TTL)
-
-        annotated_done = "annotated" in state
-        embedded_done = "embedded" in state
-
-    if annotated_done and embedded_done:
-        print(f"[process_image] Both steps complete for '{image_id}' — triggering IMAGE_READY")
-        await send_image_ready_message(image_id)
-
-
 async def process_image(data: dict):
     """Triggered on IMAGE_UPLOADED — initialise state and fan out to processing services."""
     image_id = data.get("image_id")
