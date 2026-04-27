@@ -3,7 +3,7 @@ import json
 import asyncio
 import redis.asyncio as aioredis
 import uuid
-from channels import IMAGE_PROCESSING_REQUESTED, IMAGE_EMBEDDED
+from channels import IMAGE_ANNOTATED, IMAGE_EMBEDDED
 
 # Connect to REDIS
 r = aioredis.Redis(host="localhost", port=6379, decode_responses=True)
@@ -11,8 +11,8 @@ r = aioredis.Redis(host="localhost", port=6379, decode_responses=True)
 
 async def listen():
     pubsub = r.pubsub()
-    await pubsub.subscribe(IMAGE_PROCESSING_REQUESTED)
-    print(f"[embed_image] Subscribed to '{IMAGE_PROCESSING_REQUESTED}', waiting for messages...")
+    await pubsub.subscribe(IMAGE_ANNOTATED)
+    print(f"[embed_image] Subscribed to '{IMAGE_ANNOTATED}', waiting for messages...")
  
     try:
         async for message in pubsub.listen():
