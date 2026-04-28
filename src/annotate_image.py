@@ -36,7 +36,7 @@ async def listen():
 
 async def annotate_image(data: dict):
     """Annotate the image and store results in MongoDB."""
-    image_id = data.get("image_id")
+    image_id = data.get('image_id')
     print(f"[annotate_image] Annotating image: {image_id}...")
 
     # Hardcode annotated_data based on image id
