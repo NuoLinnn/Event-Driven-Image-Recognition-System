@@ -1,4 +1,6 @@
 # Event-Driven-Image-Recognition-System
+<img width="1231" height="703" alt="image" src="https://github.com/user-attachments/assets/625d9687-aac1-4c88-96c7-8ea53589ec77" />
+
 ## Modules
 ### CLI Service
 ### Upload Image
