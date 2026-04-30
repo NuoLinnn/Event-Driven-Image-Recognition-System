@@ -3,6 +3,7 @@
 
 ## Modules
 ### CLI Service
+The CLI service interacts with the user requests from the command line and sends asynchronous messaging based on what the user input may be.
 ### Upload Image
 ### Annotate Image
 ### Embed Image
@@ -15,12 +16,16 @@ The query service will take user questions and input and return images with simi
 ### Uploaded Images
 The sample images uploaded to this project are two dog images and two cat images. They can be seen here, identified by their image ids.
 image_id = dogs13
+<img width="1024" height="558" alt="dogs13" src="https://github.com/user-attachments/assets/9d5dee13-e922-4836-94d2-20add792caec" />
 
 image_id = dogs1
+<img width="900" height="600" alt="dogs1" src="https://github.com/user-attachments/assets/a665d9fb-025a-4736-8b94-46a7577cfa49" />
 
 image_id = cats2
+<img width="277" height="182" alt="cats2" src="https://github.com/user-attachments/assets/8d1a0741-78e6-4f56-924c-46377d7f5e37" />
 
 image_id = cats3
+<img width="1600" height="900" alt="cats3" src="https://github.com/user-attachments/assets/eb0a10d1-6b06-44c6-a29d-ac8ed06cd746" />
 
 ### Annotated Images
 The annotated versions of each image can be seen here, so that a user can identify how many cats or dogs exist in a single image and their locations, using the locations of the boxes.
