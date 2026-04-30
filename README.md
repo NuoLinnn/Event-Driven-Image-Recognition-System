@@ -1,4 +1,7 @@
 # Event-Driven-Image-Recognition-System
+## Project Overview
+The project uses a combination of modules with asynchronous messaging to build a visual object retrieval system. Users are able to interact with the command line to upload images and query the system for similar images to be returned. The overall system is capable of storing and relating images using the modules shown in this diagram.
+
 <img width="1231" height="703" alt="image" src="https://github.com/user-attachments/assets/625d9687-aac1-4c88-96c7-8ea53589ec77" />
 
 ## Modules
@@ -7,7 +10,7 @@ The CLI service interacts with the user requests from the command line and sends
 ### Upload Image
 The upload image module allows a user to upload their image to the system. This can be the first step towards annotating and embedding the image.
 ### Annotate Image
-The annotate image module
+The annotate image module records the number of individual searchable objects in an image.
 ### Embed Image
 The embed image module uses vectors and a connection to the vector database to save several sets of information about the image. The first 
 ### Process Image
@@ -16,7 +19,7 @@ The process image module confirms that the image was uploaded, annotated, and em
 The query service will take user questions and input and return images with similar values. For the sample data in this project, the user can query for images that also have cats or also have dogs in them, and the system will return other uploaded images with cats or dogs.
 ## Sample Data
 ### Uploaded Images
-The sample images uploaded to this project are two dog images and two cat images. They can be seen here, identified by their image ids.
+The sample images uploaded to this project are two dog images and two cat images. They can be seen here, identified by their image ids. 
 image_id = dogs13
 <img width="1024" height="558" alt="dogs13" src="https://github.com/user-attachments/assets/9d5dee13-e922-4836-94d2-20add792caec" />
 
