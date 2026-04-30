@@ -14,7 +14,9 @@ async def test_annotate_image_calls_send(monkeypatch):
     """annotate_image should call send_image_annotated_message with merged data"""
 
     mock_send = AsyncMock()
+    mock_save = AsyncMock()
     monkeypatch.setattr(image_annotator, "send_image_annotated_message", mock_send)
+    monkeypatch.setattr(image_annotator, "save_annotation", mock_save)
 
     input_data = {
         "image_id": "123",
@@ -29,8 +31,9 @@ async def test_annotate_image_calls_send(monkeypatch):
 
     assert sent_data["image_id"] == "123"
     assert sent_data["image_path"] == "/tmp/test.png"
-    assert "annotated_data" in sent_data
-    assert sent_data["annotated_data"] == "sample data"
+    assert sent_data["labels"] == {}        # "123" doesn't match any hardcoded ID
+    assert sent_data["confidence"] == 0.95
+    assert "timestamp" in sent_data
 
 
 @pytest.mark.asyncio

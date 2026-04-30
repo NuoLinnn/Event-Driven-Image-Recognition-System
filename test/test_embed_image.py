@@ -16,11 +16,17 @@ async def test_embed_image_calls_send(monkeypatch):
     mock_send = AsyncMock()
     monkeypatch.setattr(image_embedder, "send_image_embedded_message", mock_send)
 
-    input_data = {
-        "image_id": "123",
-        "image_path": "/tmp/test.png"
+    # Patch IMAGE_VECTORS so "123" has data
+    fake_vectors = {
+        "123": [
+            {"object1": {"box": [0, 0, 100, 100], "lat_long": [42.3741, -71.0372]}}
+        ]
     }
+    monkeypatch.setattr(image_embedder, "IMAGE_VECTORS", fake_vectors)
+    monkeypatch.setattr(image_embedder, "add_object_to_index", AsyncMock())
+    monkeypatch.setattr(image_embedder, "save_index", AsyncMock())
 
+    input_data = {"image_id": "123", "image_path": "/tmp/test.png"}
     await image_embedder.embed_image(input_data)
 
     mock_send.assert_awaited_once()
@@ -29,8 +35,9 @@ async def test_embed_image_calls_send(monkeypatch):
 
     assert sent_data["image_id"] == "123"
     assert sent_data["image_path"] == "/tmp/test.png"
-    assert "embedded_data" in sent_data
-    assert sent_data["embedded_data"] == "sample embedded data"
+    assert sent_data["num_objects"] == 1       # one object in fake_vectors
+    assert "confidence" in sent_data
+    assert "timestamp" in sent_data
 
 
 @pytest.mark.asyncio

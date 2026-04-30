@@ -53,6 +53,7 @@ async def annotate_image(data: dict):
     else:
         labels = {}
 
+
     annotated_data = {
         "image_id":   image_id,
         "image_path": data.get("image_path"),
