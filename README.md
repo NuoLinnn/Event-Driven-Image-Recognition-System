@@ -5,7 +5,9 @@
 ### CLI Service
 The CLI service interacts with the user requests from the command line and sends asynchronous messaging based on what the user input may be.
 ### Upload Image
+The upload image module allows a user to upload their image to the system. This can be the first step towards annotating and embedding the image.
 ### Annotate Image
+The annotate image module
 ### Embed Image
 The embed image module uses vectors and a connection to the vector database to save several sets of information about the image. The first 
 ### Process Image
