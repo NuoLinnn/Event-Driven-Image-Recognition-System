@@ -12,7 +12,10 @@ The upload image module allows a user to upload their image to the system. This 
 ### Annotate Image
 The annotate image module records the number of individual searchable objects in an image.
 ### Embed Image
-The embed image module uses vectors and a connection to the vector database to save several sets of information about the image. The first 
+The embed image module uses vectors and a connection to the vector database to save several sets of information about the image. There is a Redis listener that listens for a message that the image annotation has been completed, which must happen before the image can be embedded. Once that happens, the embedding can begin. There is also a function to send a Redis message to the image embedded channel once the image embedding is complete.
+
+For the actual image embedding implementation, the module sets up a manual embedding process that works on the test set of images. The primary vector set is the set of "latitude-longitude" coordinates that represent different pets in the database. In the data established so far, dogs are represented by coordinates located in the city of Boston, and cats are represented by coorindates in the city of New York. On this simplified version of the system, a new image could be uploaded and would be assigned city coordiantes based on the pet the image contains. If there are other pets in the system that are part of the same city, they would be assigned to show they are "close" to the newly uploaded image.
+
 ### Process Image
 The process image module confirms that the image was uploaded, annotated, and embedded and can therefore be considered fully processed. It will return a success message to the user once it recieves success messages for all of these modules for a given image id.
 ### Query Service
