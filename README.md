@@ -6,11 +6,16 @@ The project uses a combination of modules with asynchronous messaging to build a
 
 ## Modules
 ### CLI Service
-The CLI service interacts with the user requests from the command line and sends asynchronous messaging based on what the user input may be.
+The CLI service interacts with the user requests from the command line and sends asynchronous messaging based on what the user input may be. The CLI service can take two inputs, 'upload an image' or 'query a topic'. When each of these are entered, they call functions that send asynchronous messages to either the upload image or query modules and wait for them to complete. These are the two messages that this module sends, but it also has a Redis listen function that subscribes to the query answered channel and waits for a message there. This ensures that the CLI task completes successfully.
+
 ### Upload Image
-The upload image module allows a user to upload their image to the system. This can be the first step towards annotating and embedding the image.
+The upload image module allows a user to upload their image to the system. This can be the first step towards annotating and embedding the image. The module uses Redis to listen for the upload image requested message coming from the CLI service. Once it receives that message, it calls a function within the same module to do the upload image task. Once the upload image task is completed, the image payload is sent to the image uploaded channel.
+
+The actual upload image implementation checks the image extension. It verifies the image extension and path before saving the image payload information in a SQLite database.
+
 ### Annotate Image
 The annotate image module records the number of individual searchable objects in an image.
+
 ### Embed Image
 The embed image module uses vectors and a connection to the vector database to save several sets of information about the image. There is a Redis listener that listens for a message that the image annotation has been completed, which must happen before the image can be embedded. Once that happens, the embedding can begin. There is also a function to send a Redis message to the image embedded channel once the image embedding is complete.
 
@@ -18,8 +23,10 @@ For the actual image embedding implementation, the module sets up a manual embed
 
 ### Process Image
 The process image module confirms that the image was uploaded, annotated, and embedded and can therefore be considered fully processed. It will return a success message to the user once it recieves success messages for all of these modules for a given image id.
+
 ### Query Service
 The query service will take user questions and input and return images with similar values. For the sample data in this project, the user can query for images that also have cats or also have dogs in them, and the system will return other uploaded images with cats or dogs.
+
 ## Sample Data
 ### Uploaded Images
 The sample images uploaded to this project are two dog images and two cat images. They can be seen here, identified by their image ids. 
