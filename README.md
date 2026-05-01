@@ -14,7 +14,9 @@ The upload image module allows a user to upload their image to the system. This 
 The actual upload image implementation checks the image extension. It verifies the image extension and path before saving the image payload information in a SQLite database.
 
 ### Annotate Image
-The annotate image module records the number of individual searchable objects in an image.
+The annotate image module records the number of individual searchable objects in an image. This module also uses the Redis pub/sub architecture. The listen function listens for a message on the image processing requested channel and ensures the task can be completed, sending a success message when it is. There is also a function that sends a success message to the image annotating channel once the annotation is done.
+
+The actual implementation of the module starts by connecting to Redis and MongoDB, then reads in manually entered data for the sample set of images. The manually read in annotated image data is then added to the image payload and saved to MongoDB.
 
 ### Embed Image
 The embed image module uses vectors and a connection to the vector database to save several sets of information about the image. There is a Redis listener that listens for a message that the image annotation has been completed, which must happen before the image can be embedded. Once that happens, the embedding can begin. There is also a function to send a Redis message to the image embedded channel once the image embedding is complete.
@@ -22,10 +24,17 @@ The embed image module uses vectors and a connection to the vector database to s
 For the actual image embedding implementation, the module sets up a manual embedding process that works on the test set of images. The primary vector set is the set of "latitude-longitude" coordinates that represent different pets in the database. In the data established so far, dogs are represented by coordinates located in the city of Boston, and cats are represented by coorindates in the city of New York. On this simplified version of the system, a new image could be uploaded and would be assigned city coordiantes based on the pet the image contains. If there are other pets in the system that are part of the same city, they would be assigned to show they are "close" to the newly uploaded image.
 
 ### Process Image
-The process image module confirms that the image was uploaded, annotated, and embedded and can therefore be considered fully processed. It will return a success message to the user once it recieves success messages for all of these modules for a given image id.
+The process image module works with several other modules to complete its tasks. Once the processing is requested, the message is sent to the  image processing requested channel. It confirms that the image was uploaded, annotated, and embedded and can therefore be considered fully processed. This module listens for a message from the upload, embed, and annotate image modules before the image is processed. It will return a success message to the user once it recieves success messages for all of these modules for a given image id. 
+
+The actual image processing is done using two functions to process the data from the embedding and annotating modules. Then, another function acquires a Redis lock, merging the image id data with the complete step's data and ensuring that all other modules are complete.
 
 ### Query Service
-The query service will take user questions and input and return images with similar values. For the sample data in this project, the user can query for images that also have cats or also have dogs in them, and the system will return other uploaded images with cats or dogs.
+The query service will take user questions and input and return images with similar values. The Redis pub/sub architecture has a listen function that listens for a message on the query requested channel and returns success. Once the query is complete, it sends a message to the query complete channel along with publishing the image payload to the channel.
+
+For the sample data in this project, the user can query for images that also have cats or also have dogs in them, and the system returns a mock input to indicate that the query was received.
+
+## Unit Testing
+The majortiy of unit testing used in the project tests the ability of the asynchronous Redis pub/sub messaging system. Each module has a corresponding test module that runs unit tests by creating a mock Redis connection and tests the listen and send functions of each module.
 
 ## Sample Data
 ### Uploaded Images
@@ -56,3 +65,10 @@ image_id = cats2
 image_id = cats3
 <img width="1600" height="900" alt="annotated_cats3" src="https://github.com/user-attachments/assets/f15b32d7-fb43-4b63-8de9-715776911282" />
 
+## Tech Stack
+| Component | Technology |
+|-----------|------------|
+| Messaging | Redis pub/sub |
+| Vector search | FAISS |
+| Annotation storage | MongoDB (Motor async driver) |
+| Async runtime | Python asyncio |
