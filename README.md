@@ -72,3 +72,6 @@ image_id = cats3
 | Vector search | FAISS |
 | Annotation storage | MongoDB (Motor async driver) |
 | Async runtime | Python asyncio |
+
+## Video Overview
+https://drive.google.com/file/d/1AfJVF2aa2-62rS3-2VmRJJRgSSm7DKOQ/view?usp=sharing
